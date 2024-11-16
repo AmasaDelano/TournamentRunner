@@ -28,6 +28,7 @@
         <div v-if="isStep('tournament')" id="tournament">
             <h1>Bracket {{ currentBracketIndex + 1 }} of {{ brackets.length }}</h1>
             <h2 v-if="currentBracket.winner">Winner: {{ currentBracket.winner }}</h2>
+            <p v-if="currentBracket.winner"><em>Order: {{ currentBracket.winnerOrder.join(", ") }}</em></p>
             <div><div id="progress-bar" v-bind:style="{ 'width': progressPercentage(currentBracketIndex, brackets.length) }"></div></div>
             <div><div id="progress-bar" v-bind:style="{ 'width': progressPercentage(currentMatchIndex, currentBracket.matches.length) }"></div></div>
             <h2>Pick one</h2>

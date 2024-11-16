@@ -19,35 +19,39 @@
     function newBracket() {
         return {
             winner: "",
+            winnerOrder: [],
             matches: []
         };
     }
-    function calculateBracketWinner(bracket) {
+    function calculateBracketWinnerOrder(bracket) {
         if (bracket.matches.some(function (match) {
             return !match.winner;
         })) {
-            return;
+            return [];
         }
         
         var winnerRecords = {};
-        var currentWinner = "";
-
         bracket.matches.forEach(function (match) {
             if (winnerRecords[match.winner] === undefined) {
                 winnerRecords[match.winner] = 0;
             }
             
             winnerRecords[match.winner] += 1;
-            
-            // IN CASE OF A TIE,
-            // VERY ARBITRARILY AND SCARILY PICKS ONE WINNER.
-            if (currentWinner === ""
-                    || winnerRecords[match.winner] > winnerRecords[currentWinner]) {
-                currentWinner = match.winner;
-            }
         });
 
-        return currentWinner;
+        var winnerScores = Object.keys(winnerRecords).map(function (item) {
+            return {
+                item: item,
+                score: winnerRecords[item] || 0
+            };
+        });
+        winnerScores.sort(function (a, b) {
+            return b.score - a.score;
+        });
+
+        return winnerScores.map(function (winnerScore) {
+            return winnerScore.item;
+        });
     }
 
     var app = Vue.createApp({
@@ -221,7 +225,8 @@
 
                 var brackets = this.brackets;
                 brackets.forEach(function (bracket) {
-                    bracket.winner = calculateBracketWinner(bracket);
+                    bracket.winnerOrder = calculateBracketWinnerOrder(bracket);
+                    bracket.winner = bracket.winnerOrder[0] || "";
                 });
                 brackets.forEach(function (bracket) {
                     bracket.matches.forEach(function (match) {
