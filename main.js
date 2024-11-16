@@ -32,8 +32,11 @@
         
         var winnerRecords = {};
         bracket.matches.forEach(function (match) {
-            if (winnerRecords[match.winner] === undefined) {
-                winnerRecords[match.winner] = 0;
+            if (winnerRecords[match.item1] === undefined) {
+                winnerRecords[match.item1] = 0;
+            }
+            if (winnerRecords[match.item2] === undefined) {
+                winnerRecords[match.item2] = 0;
             }
             
             winnerRecords[match.winner] += 1;
@@ -50,7 +53,7 @@
         });
 
         return winnerScores.map(function (winnerScore) {
-            return winnerScore.item;
+            return winnerScore.item + " (" + winnerScore.score + ")";
         });
     }
 
@@ -198,7 +201,11 @@
                 this.startTournament();
             },
             startTournament: function () {
-                this.currentMatchIndex = 0;
+                var firstBracketIndexWithNoWinner = this.brackets.findIndex(function (bracket) {
+                    return !bracket.winner;
+                }) || (this.brackets.length - 1);
+                this.currentBracketIndex = firstBracketIndexWithNoWinner;
+
                 this.goToLastUnchosenMatch();
                 this.updateCurrentMatch();
                 this.step = "tournament";
