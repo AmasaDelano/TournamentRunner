@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Tournament Runner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+    <div id="tournament-app">
+        <div v-if="isStep('selection')">
+            <h1>Selection App</h1>
+            <p>This app helps you select a top item or items from among a list of items.</p>
+            <h2>Enter the items to select</h2>
+            <p>Each item should be on its own line.</p>
+            <textarea v-model="rawItems" rows="15" cols="50"></textarea>
+            <p>Selection method:
+                <select v-model="selectionMethod">
+                    <option value="round-robin-series-8">Round Robin Series (8)</option>
+                    <option value="round-robin">Round Robin</option>
+                    <option value="single-elimination">Single Elimination</option>
+                </select>
+            </p>
+            <button v-on:click="confirmSelection()" class="cta"  v-bind:disabled="!rawItems">START SELECTING</button>
+        </div>
+        <div v-if="isStep('tournament')" id="tournament">
+            <h1>Bracket {{ currentBracketIndex + 1 }} of {{ brackets.length }}</h1>
+            <h2 v-if="currentBracket.winner">Winner: {{ currentBracket.winner }}</h2>
+            <div><div id="progress-bar" v-bind:style="{ 'width': progressPercentage(currentBracketIndex, brackets.length) }"></div></div>
+            <div><div id="progress-bar" v-bind:style="{ 'width': progressPercentage(currentMatchIndex, currentBracket.matches.length) }"></div></div>
+            <h2>Pick one</h2>
+            <p>Match {{ currentMatchIndex + 1 }} of {{ currentBracket.matches.length }}</p>
+            <div class="match-item-container">
+                <button v-on:click="selectItem1()"
+                        class="match-item"
+                        v-bind:class="{ 'selected': itemSelected(currentMatch.item1), 'not-selected': itemNotSelected(currentMatch.item1) }">
+                    {{ currentMatch.item1 || "?" }}
+                </button>
+                <button v-on:click="selectItem2()"
+                        class="match-item"
+                        v-bind:class="{ 'selected': itemSelected(currentMatch.item2), 'not-selected': itemNotSelected(currentMatch.item2) }">
+                    {{ currentMatch.item2 || "?" }}
+                </button>
+            </div>
+            <button v-on:click="previousMatch()" v-bind:disabled="currentMatchIndex <= 0">Previous Match</button>
+            <button v-on:click="nextMatch()" v-bind:disabled="!currentMatch.winner || currentMatchIndex >= currentBracket.matches.length - 1">Next Match</button>
+            <hr/>
+            <button v-on:click="previousBracket()" v-bind:disabled="currentBracketIndex <= 0">Previous Bracket</button>
+            <button v-on:click="nextBracket()" v-bind:disabled="currentBracketIndex >= brackets.length - 1">Next Bracket</button>
+            <hr/>
+            <button v-on:click="step = 'selection'">Restart Everything</button>
+        </div>
+        <div v-if="isStep('results')">
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

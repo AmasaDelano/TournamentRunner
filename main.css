@@ -1,0 +1,49 @@
+#tournament-app {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+button {
+    margin: 5px;
+}
+
+.cta {
+    font-size: 1.5em;
+    padding: 20px;
+    display: block;
+    margin: 40px auto;
+}
+
+#tournament {
+    text-align: center;
+}
+
+#progress-bar {
+    height: 5px;
+    background-color: blueviolet;
+}
+
+.match-item-container {
+    display: flex;
+    justify-content: center;
+}
+
+.match-item {
+    width: 250px;
+    height: 150px;
+    font-size: 1.5em;
+    /* padding: 20px 0; */
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    flex: 1 1 0px;
+}
+
+.match-item.selected {
+    background-color: bisque;
+    font-weight: bold;
+}
+
+.match-item.not-selected {
+    color: gray;
+}
