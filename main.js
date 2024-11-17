@@ -23,7 +23,7 @@
             matches: []
         };
     }
-    function calculateBracketWinnerOrder(bracket) {
+    function calculateBracketWinnerScores(bracket) {
         if (bracket.matches.some(function (match) {
             return !match.winner;
         })) {
@@ -52,9 +52,7 @@
             return b.score - a.score;
         });
 
-        return winnerScores.map(function (winnerScore) {
-            return winnerScore.item + " (" + winnerScore.score + ")";
-        });
+        return winnerScores;
     }
 
     var app = Vue.createApp({
@@ -141,20 +139,15 @@
                     // FINAL BRACKET - taking winners of brackets of 8
                     var finalBracket = newBracket();
                     
-                    brackets.forEach(function (_, bracketIndex) {
-                        if (bracketIndex >= brackets.length - 1) {
-                            return;
-                        }
-
-                        var pairs = brackets.slice(bracketIndex + 1);
-                        pairs.forEach(function (_, pairIndex) {
+                    for (var bracketIndex = 0; bracketIndex < brackets.length - 1; bracketIndex += 1) {
+                        for (var pairIndex = bracketIndex + 1; pairIndex < brackets.length; pairIndex += 1) {
                             finalBracket.matches.push({
                                 item1FromBracketWinner: bracketIndex,
                                 item2FromBracketWinner: pairIndex,
                                 winner: ""
                             });
-                        });
-                    });
+                        }
+                    }
 
                     brackets.push(finalBracket);
                 } else if (this.selectionMethod === "single-elimination") {
@@ -232,8 +225,12 @@
 
                 var brackets = this.brackets;
                 brackets.forEach(function (bracket) {
-                    bracket.winnerOrder = calculateBracketWinnerOrder(bracket);
-                    bracket.winner = bracket.winnerOrder[0] || "";
+                    var winnerScores = calculateBracketWinnerScores(bracket);
+                    bracket.winnerOrder = winnerScores.map(function (winnerScore) {
+                        return winnerScore.item + " (" + winnerScore.score + ")";
+                    });
+                    bracket.winner = (winnerScores[0] && winnerScores[0].item) || "";
+                    bracket.winnerScore = (winnerScores[0] && winnerScores[0].score) || "";
                 });
                 brackets.forEach(function (bracket) {
                     bracket.matches.forEach(function (match) {
